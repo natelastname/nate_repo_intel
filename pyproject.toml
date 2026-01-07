@@ -18,9 +18,13 @@ nate_repo_intel = "nate_repo_intel.cli:cli"
 version = "2.1.1"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<3.14.1"
 loguru = "^0.7.3"
 argh = "^0.31.3"
+networkx = "^3.6.1"
+glom = "^25.12.0"
+pydantic = "^2.12.5"
+dataclass-wizard = "^0.39.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
