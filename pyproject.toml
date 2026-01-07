@@ -24,7 +24,6 @@ argh = "^0.31.3"
 networkx = "^3.6.1"
 glom = ">=24.11.0,<25.0.0"
 pydantic = "^2.12.5"
-dataclass-wizard = "^0.39.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
