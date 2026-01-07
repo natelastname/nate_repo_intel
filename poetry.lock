@@ -186,14 +186,14 @@ boltons = ">=20.0.0"
 
 [[package]]
 name = "glom"
-version = "25.12.0"
+version = "24.11.0"
 description = "A declarative object transformer and formatter, for conglomerating nested data."
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "glom-25.12.0-py3-none-any.whl", hash = "sha256:b9f21e77f71a6576a43864e85066b8cc3f0f778d0d50961563f8981377a6dcb1"},
-    {file = "glom-25.12.0.tar.gz", hash = "sha256:1ae7da88be3693df40ad27bdf57a765a55c075c86c971bcddd67927403eb0069"},
+    {file = "glom-24.11.0-py3-none-any.whl", hash = "sha256:991db7fcb4bfa9687010aa519b7b541bbe21111e70e58fdd2d7e34bbaa2c1fbd"},
+    {file = "glom-24.11.0.tar.gz", hash = "sha256:4325f96759a912044af7b6c6bd0dba44ad8c1eb6038aab057329661d2021bb27"},
 ]
 
 [package.dependencies]
@@ -621,4 +621,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14.1"
-content-hash = "403ec2bedf55b4521fde53cc3f716896f71c37e391a4638090dd6eaad3007881"
+content-hash = "2dec6c6b4348b4c3056b033c234127d817a6664f0b4e31f654b10c8dcee989ec"

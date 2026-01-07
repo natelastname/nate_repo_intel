@@ -19,7 +19,7 @@ def repo_tree(in_path: Path, fmt_json: bool = False):
     tree = build_repo_tree(in_path)
     if fmt_json:
         print(json.dumps(tree, indent=2))
-        return 0
+        return
 
     out = format_repo_tree(tree)
     print(out)
