@@ -1,0 +1,56 @@
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "nate_repo_intel"
+version = "0.1.0"
+description = "A python module"
+readme = "README.md"
+authors = [
+  { name = "Nathan Nichols", email = "communications@resultsmotivated.com" },
+]
+
+[project.scripts]
+nate_repo_intel = "nate_repo_intel.cli:cli"
+
+[tool.poetry]
+version = "2.1.1"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+loguru = "^0.7.3"
+argh = "^0.31.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8"
+black = "^24.4.2"
+basedpyright = "^1.31.5"
+ruff = "^0.13.2"
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+    "ignore:.*unclosed.*:ResourceWarning",
+]
+
+[tool.pyright]
+typeCheckingMode = "off"
+reportMissingParameterType = "none"
+reportMissingTypeArgument = "none"
+reportUnknownParameterType = "none"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUntypedFunctionDecorator = "none"
+
+[tool.ruff]
+select = [
+       "F401" # Unused-import detection
+]
+fix = true
+src = ["src", "tests"]  # your code directories
