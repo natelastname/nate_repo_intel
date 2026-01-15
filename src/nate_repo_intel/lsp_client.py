@@ -34,6 +34,13 @@ KIND_LABELS = {
     23: "type parameter",
 }
 
+
+@dataclass
+class _DocState:
+    version: int
+    text: str
+
+
 class LspClient:
     def __init__(self, cmd: list[str], root: Path) -> None:
         self.root = root.resolve()
@@ -44,10 +51,12 @@ class LspClient:
             stderr=sys.stderr,
             cwd=str(self.root),
         )
-        self._open_docs: set[str] = set()
+
         self._next_id = 0
         self._pending: dict[int, queue.Queue[dict[str, Any]]] = {}
         self._pending_lock = threading.Lock()
+
+        self._doc_state: dict[str, _DocState] = {}  # uri -> state
 
         self._reader_thread = threading.Thread(target=self._reader_loop, daemon=True)
         self._reader_thread.start()
@@ -86,12 +95,14 @@ class LspClient:
             raise RuntimeError(f"LSP error for {method}: {msg['error']}")
         return msg.get("result")
 
-    def open_document(self, file_path: Path) -> str:
+    def ensure_open(self, file_path: Path) -> str:
         uri = file_path.resolve().as_uri()
-        if uri in self._open_docs:
+        if uri in self._doc_state:
             return uri
 
         text = file_path.read_text(encoding="utf-8")
+        self._doc_state[uri] = _DocState(version=1, text=text)
+
         self.notify(
             "textDocument/didOpen",
             {
@@ -103,8 +114,36 @@ class LspClient:
                 }
             },
         )
-        self._open_docs.add(uri)
         return uri
+
+    def update_document(self, file_path: Path, *, text: str | None = None) -> str:
+        uri = file_path.resolve().as_uri()
+        if uri not in self._doc_state:
+            return self.ensure_open(file_path)
+
+        state = self._doc_state[uri]
+        if text is None:
+            text = file_path.read_text(encoding="utf-8")
+
+        state.version += 1
+        state.text = text
+
+        # Full sync (simple + reliable)
+        self.notify(
+            "textDocument/didChange",
+            {
+                "textDocument": {"uri": uri, "version": state.version},
+                "contentChanges": [{"text": text}],
+            },
+        )
+        return uri
+
+    def close_document(self, file_path: Path) -> None:
+        uri = file_path.resolve().as_uri()
+        if uri not in self._doc_state:
+            return
+        self.notify("textDocument/didClose", {"textDocument": {"uri": uri}})
+        self._doc_state.pop(uri, None)
 
     def _reader_loop(self) -> None:
         if self.proc.stdout is None:
@@ -153,9 +192,7 @@ class LspClient:
                 "workspaceFolders": [{"uri": self.root_uri, "name": self.root.name}],
                 "capabilities": {
                     "textDocument": {
-                        "documentSymbol": {
-                            "hierarchicalDocumentSymbolSupport": True
-                        }
+                        "documentSymbol": {"hierarchicalDocumentSymbolSupport": True}
                     }
                 },
             },

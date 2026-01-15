@@ -30,7 +30,9 @@ class EnhancedSymbol:
     dotpath: str
     location: dict[str, Any]
     children: list["EnhancedSymbol"]
-
+    def __repr__(self):
+        kind = KIND_LABELS[self.kind]
+        return f"{kind} {self.name}"
 
 @dataclass(frozen=True)
 class SymbolContainer:
@@ -191,7 +193,7 @@ def _enhance_from_symbol_information_list(
 
 
 def collect_document_symbols(client: LspClient, file_path: Path) -> SymbolContainer:
-    uri = client.open_document(file_path)
+    uri = client.ensure_open(file_path)
     result = client.request(
         "textDocument/documentSymbol",
         {"textDocument": {"uri": uri}},
@@ -221,7 +223,7 @@ def collect_reference_edges(
     root = root.resolve()
 
     for def_path, container in file_symbols.items():
-        def_uri = client.open_document(def_path)
+        def_uri = client.ensure_open(def_path)
 
         for sym in container.walk():
             refs = client.request(

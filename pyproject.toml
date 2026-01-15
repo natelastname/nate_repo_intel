@@ -25,6 +25,8 @@ networkx = "^3.6.1"
 glom = ">=24.11.0,<25.0.0"
 pydantic = "^2.12.5"
 tiktoken = "^0.12.0"
+tree-sitter = "^0.25.2"
+tree-sitter-python = "^0.25.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
